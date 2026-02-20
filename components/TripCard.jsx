@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const TripCard = ({
   title,
@@ -11,7 +11,7 @@ const TripCard = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="flex w-full h-[250px] rounded-xl overflow-hidden p-1 mb-4"
+      className="flex w-full h-[250px] rounded-3xl overflow-hidden p-1 mb-4"
     >
       <Image
         source={{ uri: coverImage }}

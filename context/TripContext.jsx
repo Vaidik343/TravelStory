@@ -30,12 +30,26 @@ export const TripProvider = ({ children }) => {
   const getAllTrips = useCallback(async () => {
     try {
       const { data } = await api.get(ENDPOINTS.TRIP.ALL);
-      setTrips(data);
+      console.log("🚀 ~ TripProvider ~ data:", data);
+      // Handle both array and nested object responses
+      const tripsData = Array.isArray(data) ? data : data?.trips || [];
+      setTrips(tripsData);
       return true || res.data;
     } catch (error) {
       throw error;
     }
-  });
+  }, []);
+
+  const getTripsById = useCallback(async (id) => {
+    try {
+      const { data } = await api.get(ENDPOINTS.TRIP.GET_BY_ID(id));
+      // Handle both array and nested object responses
+      const tripData = Array.isArray(data) ? data[0] : data;
+      return tripData;
+    } catch (error) {
+      throw error;
+    }
+  }, []);
 
   const updateTrip = useCallback(async (payload, id) => {
     try {
@@ -47,7 +61,7 @@ export const TripProvider = ({ children }) => {
     } catch (error) {
       throw error;
     }
-  });
+  }, []);
 
   const deleteTrip = useCallback(async (id) => {
     try {
@@ -59,20 +73,27 @@ export const TripProvider = ({ children }) => {
     } catch (error) {
       throw error;
     }
-  });
+  }, []);
 
   const value = useMemo(
-    () => (
-      {
-        trips,
-        loading,
-        createTrip,
-        getAllTrips,
-        updateTrip,
-        deleteTrip,
-      },
-      [trips, createTrip, getAllTrips, updateTrip, deleteTrip, loading]
-    ),
+    () => ({
+      trips,
+      loading,
+      createTrip,
+      getTripsById,
+      getAllTrips,
+      updateTrip,
+      deleteTrip,
+    }),
+    [
+      trips,
+      createTrip,
+      getAllTrips,
+      getTripsById,
+      updateTrip,
+      deleteTrip,
+      loading,
+    ],
   );
 
   return <TripContext.Provider value={value}>{children}</TripContext.Provider>;

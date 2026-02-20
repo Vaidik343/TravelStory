@@ -1,9 +1,9 @@
 import {
-    createContext,
-    useCallback,
-    useContext,
-    useMemo,
-    useState,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
 } from "react";
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
@@ -29,6 +29,15 @@ export const BucketListProvider = ({ children }) => {
   const getAllBucketList = useCallback(async () => {
     try {
       const { data } = await api.get(ENDPOINTS.BUCKETLIST.ALL);
+      bucketList(...data);
+      return true || res.data;
+    } catch (error) {
+      throw error;
+    }
+  });
+  const getBucketListById = useCallback(async () => {
+    try {
+      const { data } = await api.get(ENDPOINTS.BUCKETLIST.GET_BY_ID);
       bucketList(...data);
       return true || res.data;
     } catch (error) {
@@ -70,6 +79,7 @@ export const BucketListProvider = ({ children }) => {
         loading,
         createBucketList,
         getAllBucketList,
+        getBucketListById,
         updateBucketList,
         deleteBucketList,
       },
@@ -78,6 +88,7 @@ export const BucketListProvider = ({ children }) => {
         loading,
         createBucketList,
         getAllBucketList,
+        getBucketListById,
         updateBucketList,
         deleteBucketList,
       ]
