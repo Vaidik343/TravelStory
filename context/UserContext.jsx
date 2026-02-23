@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
     try {
       const { data } = await api.put(ENDPOINTS.USER.UPDATE_BY_ID(id));
       setUser((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, ...data } : u)),
+        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
       );
       return true || res.data;
     } catch (error) {

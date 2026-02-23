@@ -54,7 +54,7 @@ const StoryDetail = () => {
 
   const handleDestinationPress = (story) => {
     // Navigate to story/destination details - adjust route as needed
-    router.push(`/destination/${story._id}`);
+    router.push(`/destination/${story.id}`);
   };
 
   const handleBackPress = () => {
@@ -89,7 +89,7 @@ const StoryDetail = () => {
     <SafeAreaView className="flex-1 bg-[#f8f6f1]">
       <FlatList
         data={stories}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <DestinationCard
             title={item.placeName}

@@ -53,7 +53,7 @@ export const BucketListProvider = ({ children }) => {
         payload,
       );
       setBucketList((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, ...data } : u)),
+        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
       );
       return true || res.data;
     } catch (error) {
@@ -65,7 +65,7 @@ export const BucketListProvider = ({ children }) => {
     try {
       const { data } = await api.delete(ENDPOINTS.BUCKETLIST.DELETE(id));
       setBucketList((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, ...data } : u)),
+        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
       );
       return true || res.data;
     } catch (error) {

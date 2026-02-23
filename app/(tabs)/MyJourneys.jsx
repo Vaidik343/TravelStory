@@ -19,7 +19,7 @@ const MyJourneys = () => {
     <SafeAreaView className="flex-1 bg-[#f8f6f1]">
       <FlatList
         data={Array.isArray(trips) ? trips : []}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TripCard
             title={item.title}
@@ -27,7 +27,7 @@ const MyJourneys = () => {
             endDate={item.endDate}
             coverImage={item.coverImage}
             places={item.places?.length || 0}
-            onPress={() => handleTripPress(item._id)}
+            onPress={() => handleTripPress(item.id)}
           />
         )}
         ListHeaderComponent={

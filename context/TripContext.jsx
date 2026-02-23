@@ -4,7 +4,7 @@ import {
   useContext,
   useMemo,
   useState,
-} from "react"; 
+} from "react";
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
 
@@ -55,7 +55,7 @@ export const TripProvider = ({ children }) => {
     try {
       const { data } = await api.put(ENDPOINTS.TRIP.UPDATE_BY_ID(id), payload);
       setTrips((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, ...data } : u)),
+        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
       );
       return true || res.data;
     } catch (error) {
@@ -67,7 +67,7 @@ export const TripProvider = ({ children }) => {
     try {
       const { data } = await api.delete(ENDPOINTS.TRIP.DELETE(id));
       setTrips((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, ...data } : u)),
+        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
       );
       return true || res.data;
     } catch (error) {
