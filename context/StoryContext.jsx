@@ -92,7 +92,9 @@ export const StoryProvider = ({ children }) => {
       deleteStories,
     ],
   );
-  return <StoryContext.Provider value={value}></StoryContext.Provider>;
+  return (
+    <StoryContext.Provider value={value}>{children}</StoryContext.Provider>
+  );
 };
 
 export const useStory = () => {

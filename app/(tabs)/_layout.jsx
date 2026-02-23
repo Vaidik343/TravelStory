@@ -1,13 +1,23 @@
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
+import { useAuth } from "../../context/AuthContext";
+
 //Tab icons
 
 // const TabIcon = ({
 
 // })
 const Layout = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if(loading) return null;
+
+  if(!isAuthenticated)
+  {
+    return <Redirect href='/(auth)/Login' />;
+  }
   return (
     <Tabs>
       <Tabs.Screen

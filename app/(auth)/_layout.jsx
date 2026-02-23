@@ -1,11 +1,17 @@
-import { Text, View } from "react-native";
+import { Redirect, Stack } from "expo-router";
+import { useAuth } from "../../context/AuthContext";
 
-const Layout = () => {
-  return (
-    <View>
-      <Text>Layout</Text>
-    </View>
-  );
-};
+export default function AuthLayout() {
+  const { isAuthenticated, loading } = useAuth();
 
-export default Layout;
+  // Wait until token restore finishes
+  if (loading) return null;
+
+  // Already logged in → go to app
+  if (isAuthenticated) {
+    return <Redirect href="/(tabs)" />;
+  }
+
+  // Not logged in → allow auth screens
+  return <Stack screenOptions={{ headerShown: false }} />;
+}

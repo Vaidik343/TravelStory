@@ -19,6 +19,7 @@ export const UserProvider = ({ children }) => {
   const createUser = useCallback(async (payload) => {
     try {
       const { data } = await api.post(ENDPOINTS.USER.CREATE, payload);
+      console.log("🚀 ~ UserProvider ~ data:", data)
       setUser(data);
       return true || res.data;
     } catch (error) {

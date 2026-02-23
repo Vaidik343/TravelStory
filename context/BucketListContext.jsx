@@ -19,7 +19,7 @@ export const BucketListProvider = ({ children }) => {
     try {
       const { data } = await api.post(ENDPOINTS.BUCKETLIST.CREATE, payload);
       setBucketList(data);
-      return true || res.data;
+      return true 
     } catch (error) {
       throw error;
     }
@@ -27,14 +27,15 @@ export const BucketListProvider = ({ children }) => {
 
   // all bucket list
   const getAllBucketList = useCallback(async () => {
+    setLoading(true);
     try {
       const { data } = await api.get(ENDPOINTS.BUCKETLIST.ALL);
-      bucketList(...data);
-      return true || res.data;
-    } catch (error) {
-      throw error;
+      setBucketList(data);
+    } finally {
+      setLoading(false);
     }
-  });
+  }, []);
+
   const getBucketListById = useCallback(async () => {
     try {
       const { data } = await api.get(ENDPOINTS.BUCKETLIST.GET_BY_ID);

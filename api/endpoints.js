@@ -1,9 +1,14 @@
 export const ENDPOINTS = {
+  AUTH: {
+    LOGIN: "/user/login",
+    LOGOUT: "/user/logout",
+    REFRESH: "/user/refresh",
+  },
   USER: {
-    CREATE: "/user",
+    CREATE: "/me",
     ALL: "/user",
-    UPDATE_BY_ID: (id) => `/user/${id}`,
-    GET_BY_ID: (id) => `/user/${id}`,
+    UPDATE_BY_ID: (id) => `/me/${id}`,
+    GET_BY_ID: (id) => `/me/${id}`,
     DELETE: (id) => `/user/${id}`,
   },
 
