@@ -20,10 +20,7 @@ export default function Layout() {
                 name="destination/[id]"
                 options={{ headerShown: false }}
               />
-              <Stack.Screen
-                name="story/[id]"
-                options={{ headerShown: false }}
-              />
+              <Stack.Screen name="story" options={{ headerShown: false }} />
             </Stack>
             {/* </BucketListProvider>
           </WishListProvider> */}

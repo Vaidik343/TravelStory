@@ -19,6 +19,7 @@ const CreateJourney = () => {
     summary: "",
     coverImage: null,
   });
+  console.log("🚀 ~ CreateJourney ~ form:", form)
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [activeDateField, setActiveDateField] = useState(null);
@@ -60,6 +61,7 @@ const CreateJourney = () => {
       Alert.alert("Error", error.response?.data?.message || error.message);
     }
   };
+  console.log("🚀 ~ handleCreateTrip ~ handleCreateTrip:", handleCreateTrip)
 
   return (
     <SafeAreaView className="flex-1 bg-[#f8f6f1]">

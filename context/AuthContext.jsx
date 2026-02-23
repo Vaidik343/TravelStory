@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await api.post(ENDPOINTS.AUTH.LOGIN, payload);
+      console.log("🔐 ~ login ~ data:", data);
 
       await AsyncStorage.setItem("accessToken", data.accessToken);
       await AsyncStorage.setItem("refreshToken", data.refreshToken);
@@ -51,6 +52,9 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
 
       return data;
+    } catch (error) {
+      console.log("🔐 ~ login ~ error:", error);
+      throw error;
     } finally {
       setLoading(false);
     }
