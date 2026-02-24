@@ -16,23 +16,28 @@ export const StoryProvider = ({ children }) => {
 
   //create story
 
-  const createStory = useCallback(async (payload) => {
+  const createStory = useCallback(async (payload, headers = {
+
+    Accept:"application/json",
+}) => {
     setLoading(true);
     try {
-      const { data } = await api.post(ENDPOINTS.STORY.CREATE, payload);
-      setStories((prev) => [...prev, data]);
+      const { data } = await api.post(ENDPOINTS.STORY.CREATE, payload, { headers });
+      console.log("🚀 ~ StoryProvider ~ data:", data)
+      setStories(data);
       return data;
-    } finally {
+    } finally { 
       setLoading(false);
     }
   }, []);
+  console.log("🚀 ~ StoryProvider ~ createStory:", createStory)
 
   //get all stories
-  const getAllStories = useCallback(async (payload) => {
+  const getAllStories = useCallback(async () => {
     try {
-      const { data } = await api.get(ENDPOINTS.STORY.ALL, payload);
+      const { data } = await api.get(ENDPOINTS.STORY.ALL);
       console.log("🚀 ~ StoryProvider ~ data:", data);
-      setStories(...data);
+      setStories(data);
       return true || res.data;
     } catch (error) {
       throw error;

@@ -18,6 +18,11 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // Handle FormData - explicitly set Content-Type for React Native
+    if (config.data instanceof FormData) {
+      config.headers["Content-Type"] = "multipart/form-data";
+    }
+
     // Log outgoing requests for debugging
     console.log("📤 ~ Axios Request:", {
       method: config.method,
@@ -25,9 +30,6 @@ api.interceptors.request.use(
       headers: config.headers,
       dataType: config.data?.constructor?.name || typeof config.data,
     });
-
-    // Don't manually set Content-Type for FormData - let axios handle it
-    // axios automatically sets the correct Content-Type with boundary for FormData
 
     return config;
   },
@@ -55,6 +57,22 @@ api.interceptors.response.use(
 
     const originalRequest = error.config;
 
+    // Retry mechanism for network errors (e.g., Render sleep mode)
+    if (error.code === "ERR_NETWORK" && !originalRequest._retry) {
+      originalRequest._retry = true;
+      console.log("🔄 ~ Retrying request after network error...");
+
+      // Wait a bit before retrying (gives Render time to wake up)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      try {
+        return await api(originalRequest);
+      } catch (retryError) {
+        originalRequest._retry = false;
+        return Promise.reject(retryError);
+      }
+    }
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -64,7 +82,9 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = await AsyncStorage.getItem("refreshToken");
-        const { data } = await api.post(ENDPOINTS.AUTH.REFRESH, { refreshToken });
+        const { data } = await api.post(ENDPOINTS.AUTH.REFRESH, {
+          refreshToken,
+        });
 
         await AsyncStorage.setItem("accessToken", data.accessToken);
 

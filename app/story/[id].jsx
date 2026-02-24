@@ -57,6 +57,10 @@ const StoryDetail = () => {
     router.push(`/destination/${story.id}`);
   };
 
+  const handleAddStory = () => {
+    router.push(`/story/story-form?id=${id}`);
+  };
+
   const handleBackPress = () => {
     router.back();
   };
@@ -140,6 +144,16 @@ const StoryDetail = () => {
                   </Text>
                 </View>
               </View>
+            </View>
+
+            {/* Add Story Button */}
+            <View className="px-2 py-2 mt-3 flex-row justify-end">
+              <Pressable
+                onPress={handleAddStory}
+                className="bg-[#e68619] px-4 py-2 rounded-xl "
+              >
+                <Text className="text-white font-semibold">+ Add Story</Text>
+              </Pressable>
             </View>
 
             {/* Destinations Header */}
