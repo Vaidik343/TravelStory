@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import InputFields from "../../components/InputFields";
 import { useTrip } from "../../context/TripContext";
 import { pickImage } from "../../utils/pickImage";
-import CustomButton from "./../../components/CustomButton"; 
+import CustomButton from "./../../components/CustomButton";
 
 const CreateJourney = () => {
   const { loading, createTrip } = useTrip();
@@ -19,7 +19,7 @@ const CreateJourney = () => {
     summary: "",
     coverImage: null,
   });
-  console.log("🚀 ~ CreateJourney ~ form:", form)
+  console.log("🚀 ~ CreateJourney ~ form:", form);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [activeDateField, setActiveDateField] = useState(null);
@@ -44,16 +44,23 @@ const CreateJourney = () => {
       return;
     }
 
-    const fields = {
-      title: form.title.trim(),
-      startDate: form.startDate,
-      endDate: form.endDate,
-      summary: form.summary,
-    };
+    const formData = new FormData();
+
+    formData.append("title", form.title.trim());
+    formData.append("startDate", form.startDate);
+    formData.append("endDate", form.endDate);
+    formData.append("summary", form.summary);
+
+    if (form.coverImage) {
+      formData.append("coverImage", {
+        uri: form.coverImage.uri,
+        name: form.coverImage.fileName || "cover.jpg",
+        type: form.coverImage.mimeType || "image/jpeg",
+      });
+    }
 
     try {
-      const result = await createTrip(fields, form.coverImage || null);
-      console.log("🚀 ~ handleCreateTrip ~ result:", result);
+      const result = await createTrip(formData);
       if (result) {
         router.push("/(tabs)/MyJourneys");
       }
@@ -61,7 +68,7 @@ const CreateJourney = () => {
       Alert.alert("Error", error.response?.data?.message || error.message);
     }
   };
-  console.log("🚀 ~ handleCreateTrip ~ handleCreateTrip:", handleCreateTrip)
+  console.log("🚀 ~ handleCreateTrip ~ handleCreateTrip:", handleCreateTrip);
 
   return (
     <SafeAreaView className="flex-1 bg-[#f8f6f1]">
@@ -82,10 +89,11 @@ const CreateJourney = () => {
         {/* Cover Image Picker */}
         <Pressable
           onPress={handlePickImage}
-          className={`w-full h-48 rounded-2xl justify-center items-center mb-6 border-2 border-dashed ${form.coverImage
+          className={`w-full h-48 rounded-2xl justify-center items-center mb-6 border-2 border-dashed ${
+            form.coverImage
               ? "border-transparent"
               : "border-[#d4b8a1] bg-[#f5ede3]"
-            }`}
+          }`}
         >
           {form.coverImage ? (
             <Image

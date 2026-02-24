@@ -14,16 +14,13 @@ export const TripProvider = ({ children }) => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  //add multiple image upload logic
   //create trip
-  const createTrip = useCallback(async (payload) => {
-    try {
-      const { data } = await api.post(ENDPOINTS.TRIP.CREATE, payload);
-      setTrips(data);
-      return true || res.data;
-    } catch (error) {
-      throw error;
-    }
+  const createTrip = useCallback(async (formData) => {
+    const { data } = await api.post(ENDPOINTS.TRIP.CREATE, formData);
+
+    // append new trip instead of replacing all
+    setTrips((prev) => [data, ...prev]);
+    return data;
   }, []);
 
   //all trips
