@@ -7,11 +7,13 @@ const TripCard = ({
   coverImage,
   places,
   onPress,
+  onLongPress,
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="flex w-full h-[250px] rounded-3xl overflow-hidden p-1 mb-4"
+      onLongPress={onLongPress}
+      className="w-full h-[300px] rounded-3xl overflow-hidden mb-4"
     >
       <Image
         source={{ uri: coverImage }}
@@ -20,18 +22,19 @@ const TripCard = ({
       />
 
       {/* Dark Overlay */}
-      <View className="absolute inset-0 bg-black/30" />
+      {/* <View className="absolute inset-0 bg-black/30" /> */}
 
       {/* Content */}
       <View className="absolute bottom-4 left-4 right-4">
-        <Text className="text-white text-lg font-semibold">{title}</Text>
+        <Text className="text-white text-2xl font-bold">{title}</Text>
 
         <View className="flex-row items-center mt-1">
           <Text className="text-white/90 text-xs">
-            {startDate} - {endDate}
+            📅 {startDate} - {endDate}
           </Text>
-
-          <Text className="text-white/90 text-xs ml-3">{places} places</Text>
+          <Text className="text-white/90 text-xs ml-3">
+            📍 {places} place{places !== 1 ? "s" : ""}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

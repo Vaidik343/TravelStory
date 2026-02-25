@@ -1,5 +1,5 @@
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { Image, Pressable, Text, View } from "react-native";
-
 const DestinationCard = ({ onPress, title, text, image, date }) => {
   return (
     <Pressable
@@ -25,7 +25,9 @@ const DestinationCard = ({ onPress, title, text, image, date }) => {
         </Text>
       </View>
       {/* Right icon */}
-      <Text className="text-xl text-[#8C7B6A] ml-3">📍</Text>
+      <Text className="text-xl text-[#8C7B6A] ml-3">
+        <EvilIcons name="location" size={30} className="color-orange-600" />
+      </Text>
     </Pressable>
   );
 };

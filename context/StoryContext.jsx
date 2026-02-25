@@ -16,21 +16,28 @@ export const StoryProvider = ({ children }) => {
 
   //create story
 
-  const createStory = useCallback(async (payload, headers = {
-
-    Accept:"application/json",
-}) => {
-    setLoading(true);
-    try {
-      const { data } = await api.post(ENDPOINTS.STORY.CREATE, payload, { headers });
-      console.log("🚀 ~ StoryProvider ~ data:", data)
-      setStories(data);
-      return data;
-    } finally { 
-      setLoading(false);
-    }
-  }, []);
-  console.log("🚀 ~ StoryProvider ~ createStory:", createStory)
+  const createStory = useCallback(
+    async (
+      payload,
+      headers = {
+        Accept: "application/json",
+      },
+    ) => {
+      setLoading(true);
+      try {
+        const { data } = await api.post(ENDPOINTS.STORY.CREATE, payload, {
+          headers,
+        });
+        console.log("🚀 ~ StoryProvider ~ data:", data);
+        setStories((prev) => [...prev, data]);
+        return data;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+  console.log("🚀 ~ StoryProvider ~ createStory:", createStory);
 
   //get all stories
   const getAllStories = useCallback(async () => {
@@ -49,7 +56,7 @@ export const StoryProvider = ({ children }) => {
     try {
       const { data } = await api.get(ENDPOINTS.STORY.GET_BY_ID, payload);
       console.log("🚀 ~ StoryProvider ~ data:", data);
-      setStories(...data);
+      setStories(data);
       return true || res.data;
     } catch (error) {
       throw error;
@@ -60,7 +67,9 @@ export const StoryProvider = ({ children }) => {
   const updateStories = useCallback(async (payload, id) => {
     try {
       const { data } = await api.put(ENDPOINTS.STORY.UPDATE_BY_ID(id), payload);
-      setStories(...data);
+      setStories((prev) =>
+        prev.map((story) => (story.id === id ? data : story)),
+      );
       return true || res.data;
     } catch (error) {
       throw error;
@@ -70,7 +79,7 @@ export const StoryProvider = ({ children }) => {
   const deleteStories = useCallback(async (id) => {
     try {
       const { data } = await api.delete(ENDPOINTS.STORY.DELETE(id));
-      setStories(...data);
+      setStories((prev) => prev.filter((story) => story.id !== id));
       return true || res.data;
     } catch (error) {
       throw error;

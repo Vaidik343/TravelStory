@@ -71,7 +71,7 @@ const CreateJourney = () => {
   console.log("🚀 ~ handleCreateTrip ~ handleCreateTrip:", handleCreateTrip);
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f8f6f1]">
+    <SafeAreaView className="flex-1 bg-base">
       <KeyboardAwareScrollView
         enableOnAndroid
         keyboardShouldPersistTaps="handled"
@@ -83,7 +83,7 @@ const CreateJourney = () => {
           <Pressable onPress={() => router.back()} className="mr-3">
             <Text className="text-2xl">←</Text>
           </Pressable>
-          <Text className="text-3xl font-bold text-gray-950">New Journey</Text>
+          <Text className="text-2xl font-bold text-gray-950">New Journey</Text>
         </View>
 
         {/* Cover Image Picker */}

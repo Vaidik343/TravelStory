@@ -18,8 +18,8 @@ export const BucketListProvider = ({ children }) => {
   const createBucketList = useCallback(async (payload) => {
     try {
       const { data } = await api.post(ENDPOINTS.BUCKETLIST.CREATE, payload);
-      setBucketList(data);
-      return true 
+      setBucketList((prev) => [data, ...prev]);
+      return true;
     } catch (error) {
       throw error;
     }
@@ -39,7 +39,7 @@ export const BucketListProvider = ({ children }) => {
   const getBucketListById = useCallback(async () => {
     try {
       const { data } = await api.get(ENDPOINTS.BUCKETLIST.GET_BY_ID);
-      bucketList(...data);
+      bucketList(data);
       return true || res.data;
     } catch (error) {
       throw error;
@@ -64,9 +64,7 @@ export const BucketListProvider = ({ children }) => {
   const deleteBucketList = useCallback(async (id) => {
     try {
       const { data } = await api.delete(ENDPOINTS.BUCKETLIST.DELETE(id));
-      setBucketList((prev) =>
-        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
-      );
+      setBucketList((prev) => prev.filter((trip) => trip.id !== id));
       return true || res.data;
     } catch (error) {
       throw error;
@@ -97,9 +95,9 @@ export const BucketListProvider = ({ children }) => {
   );
 
   return (
-    <WishListContext.Provider value={value}>
+    <BucketListContext.Provider value={value}>
       {children}
-    </WishListContext.Provider>
+    </BucketListContext.Provider>
   );
 };
 

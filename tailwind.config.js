@@ -4,19 +4,11 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
-      fontFamily: {},
       colors: {
-        bgColor: {
-          1: "#f8f6f1",
-        },
-
-        fontColor: {
-          1: "#ffffff",
-        },
-
-        secondary: {
-          1:'#e68619'
-        }
+        primary: "#F39200", // 🔶 Main brand color
+        base: "#F9F8F3", // 🧱 Base / background
+        background: "#F9F8F3", // alias (optional)
+        text: "#222222", // ✍️ Typography
       },
     },
   },

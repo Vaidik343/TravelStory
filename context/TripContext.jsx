@@ -63,10 +63,10 @@ export const TripProvider = ({ children }) => {
   const deleteTrip = useCallback(async (id) => {
     try {
       const { data } = await api.delete(ENDPOINTS.TRIP.DELETE(id));
-      setTrips((prev) =>
-        prev.map((u) => (u.id === id ? { ...u, ...data } : u)),
-      );
-      return true || res.data;
+
+      // ✅ remove trip from state immediately
+      setTrips((prev) => prev.filter((trip) => trip.id !== id));
+      return true;
     } catch (error) {
       throw error;
     }
