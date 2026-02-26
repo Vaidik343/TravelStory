@@ -2,18 +2,33 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
+import { v4 as uuidv4 } from "uuid";
+import * as Network from "expo-network";
+
+import {insertStoryLocal, getUnsyncedStories, markStorySynced} from '../db/story.repo'
 
 const StoryContext = createContext(null);
+
+const isOnline = async () => {
+  const state = await Network.getNetworkStateAsync();
+  return state.isConnected && state.isInternetReachable;
+};
 
 export const StoryProvider = ({ children }) => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  //load from sqlite
+
+  useEffect(() => {
+    getUnsyncedStories().then(setStories);
+  }, [])
   //create story
 
   const createStory = useCallback(

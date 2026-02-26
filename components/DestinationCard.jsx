@@ -12,12 +12,12 @@ const DestinationCard = ({ onPress, title, text, image, date }) => {
         resizeMode="cover"
       />
       <View className="flex-1">
-        <Text className="text-base font-semibold text-[#3B2F2F] mb-1">
+        <Text className="text-base font-semibold text-gray-950 mb-1">
           {title}
         </Text>
         <Text className="text-xs text-[#8C7B6A] mb-1">{date}</Text>
         <Text
-          className="text-sm text-[#6B5E52]"
+          className="text-sm text-gray-900"
           numberOfLines={2}
           ellipsizeMode="tail"
         >

@@ -12,7 +12,7 @@ const storyForm = () => {
   // URL passes 'id' but we need 'tripId' for the API
   const { id: tripId } = useLocalSearchParams();
   const { createStory, loading } = useStory();
-  console.log("🚀 ~ storyForm ~ createStory:", createStory)
+  console.log("🚀 ~ storyForm ~ createStory:", createStory);
   const [form, setForm] = useState({
     placeName: "",
     visitDate: "",
@@ -137,7 +137,7 @@ const storyForm = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="p-2">
       <KeyboardAwareScrollView
         enableAutomaticScroll
         keyboardShouldPersistTaps="handled"
@@ -174,7 +174,7 @@ const storyForm = () => {
           ) : (
             <View className="items-center">
               <Text className="text-4xl mb-2">{/* icon */}</Text>
-              <Text className="text-base font-">
+              <Text className="text-base text-gray-900">
                 Tap to add multiple images
               </Text>
             </View>
