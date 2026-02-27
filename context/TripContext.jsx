@@ -7,6 +7,9 @@ import {
 } from "react";
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
+import { v4 as uuidv4 } from "uuid";
+import { isOnline } from "../services/network";
+import { insertTripLocal } from "../db/trip.repo";
 
 const TripContext = createContext(null);
 
@@ -16,11 +19,31 @@ export const TripProvider = ({ children }) => {
 
   //create trip
   const createTrip = useCallback(async (formData) => {
-    const { data } = await api.post(ENDPOINTS.TRIP.CREATE, formData);
-
-    // append new trip instead of replacing all
-    setTrips((prev) => [data, ...prev]);
-    return data;
+    try {
+      const online = await isOnline();
+      
+      if (online) {
+        // Online - save to server
+        const { data } = await api.post(ENDPOINTS.TRIP.CREATE, formData);
+        setTrips((prev) => [data, ...prev]);
+        return data;
+      } else {
+        // Offline - save to SQLite locally
+        console.log("📱 Offline - saving trip locally");
+        const localTrip = {
+          ...formData,
+          id: uuidv4(),
+          isSynced: 0,
+          updatedAt: new Date().toISOString(),
+        };
+        await insertTripLocal(localTrip);
+        setTrips((prev) => [localTrip, ...prev]);
+        return localTrip;
+      }
+    } catch (error) {
+      console.error("❌ Error creating trip:", error);
+      throw error;
+    }
   }, []);
 
   //all trips

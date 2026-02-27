@@ -1,5 +1,4 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
-
 const TripCard = ({
   title,
   startDate,
@@ -28,13 +27,17 @@ const TripCard = ({
       <View className="absolute bottom-4 left-4 right-4">
         <Text className="text-white text-2xl font-bold">{title}</Text>
 
-        <View className="flex-row items-center mt-1">
-          <Text className="text-white/90 text-xs">
-            📅 {startDate} - {endDate}
+        <View className="flex-row items-center  mt-1">
+          <Text className="text-gray-50 text-mg font-semibold">
+            {/* <Feather name="calendar" size={24} color="black" /> */}
+            {new Date(startDate).toLocaleDateString()} -{" "}
           </Text>
-          <Text className="text-white/90 text-xs ml-3">
+          <Text className="text-gray-50 text-mg font-semibold">
+            {new Date(endDate).toLocaleDateString()}
+          </Text>
+          {/* <Text className="text-white/90 text-xs ml-3">
             📍 {places} place{places !== 1 ? "s" : ""}
-          </Text>
+          </Text> */}
         </View>
       </View>
     </TouchableOpacity>

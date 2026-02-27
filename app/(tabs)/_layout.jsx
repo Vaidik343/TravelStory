@@ -35,7 +35,7 @@ const Layout = () => {
           right: 16,
           bottom: BOTTOM_OFFSET,
           height: TAB_BAR_HEIGHT,
-          borderRadius: 20,
+          borderRadius: 30,
 
           backgroundColor: "#ffff",
           borderTopWidth: 0,

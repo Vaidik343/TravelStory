@@ -2,7 +2,7 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import LottieView from "lottie-react-native";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -22,6 +22,19 @@ const hello = "../../assets/json/Hello.json";
 const MyJourneys = () => {
   const { trips, loading, getAllTrips, deleteTrip } = useTrip();
   const swipeableRefs = useRef({});
+
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      await getAllTrips();
+    } catch (err) {
+      console.log("Refresh error:", err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     getAllTrips();
@@ -65,10 +78,12 @@ const MyJourneys = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-base ">
+    <SafeAreaView className="flex-1 bg-base p-1">
       <FlatList
         data={Array.isArray(trips) ? trips : []}
         keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         renderItem={({ item }) => (
           <Swipeable
             ref={(ref) => (swipeableRefs.current[item.id] = ref)}
@@ -92,13 +107,13 @@ const MyJourneys = () => {
         )}
         ListHeaderComponent={
           <View className="mb-6">
-            <View className="flex-row items-center mb-2 px-2">
+            <View className="flex-row items-center mb-2 px-1">
               <EvilIcons name="location" size={24} color="#e68619" />
               <Text className="text-[#e68619] ml-1 font-semibold uppercase tracking-wide">
                 Travel Journal
               </Text>
             </View>
-            <View className="px-6">
+            <View className="px-3">
               <Text className="text-2xl font-bold text-gray-950 mb-1">
                 My Journeys
               </Text>

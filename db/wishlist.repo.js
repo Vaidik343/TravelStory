@@ -1,39 +1,30 @@
-import { db } from "./database";
+import { getDB } from "./database";
 
-export const insertStoryLocal = (story) => {
-  return new Promise((resolve, reject) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `INSERT INTO stories VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          story.id,
-          story.tripId,
-          story.placeName,
-          story.story,
-          story.visitDate,
-          JSON.stringify(story.images),
-          0,
-          story.updatedAt,
-        ],
-        () => resolve(true),
-        (_, error) => reject(error)
-      );
-    });
-  });
+export const insertWishlistLocal = async (item) => {
+  const db = await getDB();
+  if (!db) return false; // Web platform - skip SQLite
+  await db.runAsync(
+    `INSERT INTO wishlist (id, name, notes, isSynced, updatedAt) VALUES (?, ?, ?, ?, ?)`,
+    [
+      item.id,
+      item.name,
+      item.notes,
+      0, // isSynced
+      item.updatedAt,
+    ]
+  );
+  return true;
 };
 
-export const getUnsyncedStories = () =>
-  new Promise((resolve) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `SELECT * FROM stories WHERE isSynced = 0`,
-        [],
-        (_, { rows }) => resolve(rows._array)
-      );
-    });
-  });
+export const getUnsyncedWishlist = async () => {
+  const db = await getDB();
+  if (!db) return []; // Web platform - return empty array
+  const result = await db.getAllAsync(`SELECT * FROM wishlist WHERE isSynced = 0`);
+  return result;
+};
 
-export const markStorySynced = (id) =>
-  db.transaction((tx) => {
-    tx.executeSql(`UPDATE stories SET isSynced = 1 WHERE id = ?`, [id]);
-  });
+export const markWishlistSynced = async (id) => {
+  const db = await getDB();
+  if (!db) return; // Web platform - skip
+  await db.runAsync(`UPDATE wishlist SET isSynced = 1 WHERE id = ?`, [id]);
+};

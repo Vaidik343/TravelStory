@@ -9,28 +9,28 @@ import {
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
 import { v4 as uuidv4 } from "uuid";
-import * as Network from "expo-network";
-
-import {insertStoryLocal, getUnsyncedStories, markStorySynced} from '../db/story.repo'
+import { isOnline } from "../services/network";
+import { insertStoryLocal, getUnsyncedStories } from "../db/story.repo";
 
 const StoryContext = createContext(null);
-
-const isOnline = async () => {
-  const state = await Network.getNetworkStateAsync();
-  return state.isConnected && state.isInternetReachable;
-};
 
 export const StoryProvider = ({ children }) => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  //load from sqlite
-
+  // Load from sqlite on mount
   useEffect(() => {
-    getUnsyncedStories().then(setStories);
-  }, [])
-  //create story
+    const loadLocalStories = async () => {
+      const localStories = await getUnsyncedStories();
+      if (localStories.length > 0) {
+        console.log(`📱 Loaded ${localStories.length} local stories`);
+        setStories(localStories);
+      }
+    };
+    loadLocalStories();
+  }, []);
 
+  //create story
   const createStory = useCallback(
     async (
       payload,
@@ -40,19 +40,38 @@ export const StoryProvider = ({ children }) => {
     ) => {
       setLoading(true);
       try {
-        const { data } = await api.post(ENDPOINTS.STORY.CREATE, payload, {
-          headers,
-        });
-        console.log("🚀 ~ StoryProvider ~ data:", data);
-        setStories((prev) => [...prev, data]);
-        return data;
+        const online = await isOnline();
+        
+        if (online) {
+          // Online - save to server
+          const { data } = await api.post(ENDPOINTS.STORY.CREATE, payload, {
+            headers,
+          });
+          console.log("🚀 ~ StoryProvider ~ data:", data);
+          setStories((prev) => [...prev, data]);
+          return data;
+        } else {
+          // Offline - save to SQLite locally
+          console.log("📱 Offline - saving story locally");
+          const localStory = {
+            ...payload,
+            id: uuidv4(),
+            isSynced: 0,
+            updatedAt: new Date().toISOString(),
+          };
+          await insertStoryLocal(localStory);
+          setStories((prev) => [...prev, localStory]);
+          return localStory;
+        }
+      } catch (error) {
+        console.error("❌ Error creating story:", error);
+        throw error;
       } finally {
         setLoading(false);
       }
     },
     [],
   );
-  console.log("🚀 ~ StoryProvider ~ createStory:", createStory);
 
   //get all stories
   const getAllStories = useCallback(async () => {

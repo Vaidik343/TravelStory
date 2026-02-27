@@ -7,6 +7,9 @@ import {
 } from "react";
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
+import { v4 as uuidv4 } from "uuid";
+import { isOnline } from "../services/network";
+import { insertWishlistLocal } from "../db/wishlist.repo";
 
 const WishListContext = createContext(null);
 
@@ -17,10 +20,28 @@ export const WishListProvider = ({ children }) => {
   //create trip
   const createWishList = useCallback(async (payload) => {
     try {
-      const { data } = await api.post(ENDPOINTS.WISHLIST.CREATE, payload);
-      setWishList((prev) => [data, ...prev]);
-      return true || res.data;
+      const online = await isOnline();
+      
+      if (online) {
+        // Online - save to server
+        const { data } = await api.post(ENDPOINTS.WISHLIST.CREATE, payload);
+        setWishList((prev) => [data, ...prev]);
+        return true || res.data;
+      } else {
+        // Offline - save to SQLite locally
+        console.log("📱 Offline - saving wishlist locally");
+        const localWishlist = {
+          ...payload,
+          id: uuidv4(),
+          isSynced: 0,
+          updatedAt: new Date().toISOString(),
+        };
+        await insertWishlistLocal(localWishlist);
+        setWishList((prev) => [localWishlist, ...prev]);
+        return localWishlist;
+      }
     } catch (error) {
+      console.error("❌ Error creating wishlist:", error);
       throw error;
     }
   }, []);

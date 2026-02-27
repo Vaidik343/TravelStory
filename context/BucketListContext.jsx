@@ -7,6 +7,9 @@ import {
 } from "react";
 import api from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
+import { v4 as uuidv4 } from "uuid";
+import { isOnline } from "../services/network";
+import { insertBucketListLocal } from "../db/bucket.repo";
 
 const BucketListContext = createContext(null);
 
@@ -17,10 +20,28 @@ export const BucketListProvider = ({ children }) => {
   //create bucket list
   const createBucketList = useCallback(async (payload) => {
     try {
-      const { data } = await api.post(ENDPOINTS.BUCKETLIST.CREATE, payload);
-      setBucketList((prev) => [data, ...prev]);
-      return true;
+      const online = await isOnline();
+      
+      if (online) {
+        // Online - save to server
+        const { data } = await api.post(ENDPOINTS.BUCKETLIST.CREATE, payload);
+        setBucketList((prev) => [data, ...prev]);
+        return true;
+      } else {
+        // Offline - save to SQLite locally
+        console.log("📱 Offline - saving bucketlist locally");
+        const localBucketList = {
+          ...payload,
+          id: uuidv4(),
+          isSynced: 0,
+          updatedAt: new Date().toISOString(),
+        };
+        await insertBucketListLocal(localBucketList);
+        setBucketList((prev) => [localBucketList, ...prev]);
+        return localBucketList;
+      }
     } catch (error) {
+      console.error("❌ Error creating bucketlist:", error);
       throw error;
     }
   }, []);

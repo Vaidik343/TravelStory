@@ -1,11 +1,15 @@
-import { Text, View } from "react-native";
+import { Redirect } from "expo-router";
+import { useAuth } from "../context/AuthContext";
 
 export default function Index() {
-  return (
-    <View>
-      <Text className="text-2xl color-blue-500">
-        Edit app/index.tsx to edit this screen.
-      </Text>
-    </View>
-  );
+  const { user, loading } = useAuth();
+
+  // Optional: prevent flicker while auth loads
+  if (loading) return null;
+
+  if (user) {
+    return <Redirect href="/(tabs)" />;
+  }
+
+  return <Redirect href="/(auth)" />;
 }
